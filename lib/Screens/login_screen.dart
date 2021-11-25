@@ -18,23 +18,6 @@ class _LoginScreenState extends State<LoginScreen> {
   String email;
   String password;
   bool remember = false;
-  final List<String> errors = [];
-
-  void addError({String error}) {
-    if (!errors.contains(error)) {
-      setState(() {
-        errors.add(error);
-      });
-    }
-  }
-
-  void removeError({String error}) {
-    if (errors.contains(error)) {
-      setState(() {
-        errors.remove(error);
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,21 +89,11 @@ class _LoginScreenState extends State<LoginScreen> {
     return TextFormField(
       obscureText: true,
       onSaved: (newValue) => password = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kPassNullError);
-        } else if (value.length >= 8) {
-          removeError(error: kShortPassError);
-        }
-        return null;
-      },
       validator: (value) {
         if (value.isEmpty) {
-          addError(error: kPassNullError);
-          return "";
+          return kPassNullError;
         } else if (value.length < 8) {
-          addError(error: kShortPassError);
-          return "";
+          return kShortPassError;
         }
         return null;
       },
@@ -138,29 +111,26 @@ class _LoginScreenState extends State<LoginScreen> {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
       onSaved: (newValue) => email = newValue,
+      // ignore: void_checks
       onChanged: (value) {
         if (value.isNotEmpty) {
-          removeError(error: kEmailNullError);
+          return kEmailNullError;
         } else if (emailValidatorRegExp.hasMatch(value)) {
-          removeError(error: kInvalidEmailError);
+          return kInvalidEmailError;
         }
-        return;
+        return null;
       },
       validator: (value) {
         if (value.isEmpty) {
-          addError(error: kEmailNullError);
-          return "";
+          return kEmailNullError;
         } else if (!emailValidatorRegExp.hasMatch(value)) {
-          addError(error: kInvalidEmailError);
-          return "";
+          return kInvalidEmailError;
         }
         return null;
       },
       decoration: const InputDecoration(
           labelText: "Email",
           hintText: "Enter your email",
-          // If  you are using latest version of flutter then lable text and hint text shown like this
-          // if you r using flutter less then 1.20.* then maybe this is not working properly
           floatingLabelBehavior: FloatingLabelBehavior.always,
           suffixIcon: Icon(Icons.email)),
     );
