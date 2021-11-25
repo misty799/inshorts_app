@@ -8,7 +8,6 @@ import 'package:test_app/Screens/home_drawer.dart';
 import 'package:test_app/Utils/data_tile_widget.dart';
 import 'package:test_app/bloc/data_event.dart';
 import 'package:test_app/bloc/data_bloc.dart';
-import 'package:test_app/database_services.dart/offline_database.dart';
 import 'package:test_app/models/news.dart';
 import 'package:test_app/models/user.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -173,49 +172,42 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final list = snapshot.data as List<News>;
-              return Column(children: [
-                Expanded(
-                    child: ScrollablePositionedList.builder(
-                        itemPositionsListener: _itemPositionListener,
-                        itemScrollController: _scrollController,
-                        itemCount: list.length,
-                        itemBuilder: (context, i) {
-                          News data = list[i];
-                          return GestureDetector(
-                            onVerticalDragEnd: (details) {
-                              if (details.primaryVelocity == 0) return;
-                              double velocity = details.primaryVelocity;
-                              if (velocity < 0 && i < list.length - 1) {
-                                _scrollController.scrollTo(
-                                    index: i + 1,
-                                    duration: Duration(seconds: 1),
-                                    curve: Curves.decelerate);
-                              } else if (i > 0) {
-                                _scrollController.scrollTo(
-                                    index: i - 1,
-                                    duration: Duration(seconds: 1),
-                                    curve: Curves.decelerate);
-                              }
-                            },
-                            onHorizontalDragEnd: (DragEndDetails details) {
-                              if (details.primaryVelocity == 0) return;
-                              if (details.primaryVelocity.compareTo(0) == -1) {
-                                launch(data.readMoreUrl);
-                              }
-                            },
-                            child: DataTileWidget(
-                                data: data,
-                                index: i,
-                                dataBloc: _dataBloc,
-                                bookMarked: false),
-                          );
-                        })),
-                if (isLoading)
-                  SizedBox(
-                    height: isLoading ? 100 : 0,
-                    child: const Center(child: LinearProgressIndicator()),
-                  ),
-              ]);
+              return ScrollablePositionedList.builder(
+                  itemPositionsListener: _itemPositionListener,
+                  itemScrollController: _scrollController,
+                  itemCount: list.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, i) {
+                    News data = list[i];
+                    return GestureDetector(
+                      onVerticalDragEnd: (details) {
+                        if (details.primaryVelocity == 0) return;
+                        double velocity = details.primaryVelocity;
+                        if (velocity < 0 && i < list.length - 1) {
+                          _scrollController.scrollTo(
+                              index: i + 1,
+                              duration: Duration(seconds: 1),
+                              curve: Curves.decelerate);
+                        } else if (i > 0) {
+                          _scrollController.scrollTo(
+                              index: i - 1,
+                              duration: Duration(seconds: 1),
+                              curve: Curves.decelerate);
+                        }
+                      },
+                      onHorizontalDragEnd: (DragEndDetails details) {
+                        if (details.primaryVelocity == 0) return;
+                        if (details.primaryVelocity.compareTo(0) == -1) {
+                          launch(data.readMoreUrl);
+                        }
+                      },
+                      child: DataTileWidget(
+                          data: data,
+                          index: i,
+                          dataBloc: _dataBloc,
+                          bookMarked: false),
+                    );
+                  });
             } else {
               return Center(
                   child: SpinKitThreeBounce(
