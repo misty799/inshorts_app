@@ -13,8 +13,7 @@ import 'package:test_app/models/user.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
-  final User user;
-  const HomeScreen({Key key, this.user}) : super(key: key);
+  const HomeScreen({Key key}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -45,9 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: HomeDrawer(
-          user: widget.user,
-        ),
+        drawer: HomeDrawer(),
         appBar: AppBar(
           centerTitle: true,
           title: const Text(

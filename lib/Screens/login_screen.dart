@@ -68,9 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   prefs.setBool('loggedIn', true);
                                   Navigator.of(context).pushAndRemoveUntil(
                                       MaterialPageRoute(builder: (context) {
-                                    return HomeScreen(
-                                        user:
-                                            User(email: email, loggedIn: true));
+                                    return HomeScreen();
                                   }), (route) => false);
                                 }
 

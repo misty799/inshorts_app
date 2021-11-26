@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_app/bloc/data_bloc.dart';
 import 'package:test_app/Screens/home_screen.dart';
 import 'package:test_app/Screens/login_screen.dart';
 import 'package:test_app/database_services.dart/shared_prefs_data.dart';
-import 'package:test_app/models/user.dart';
 
-User user;
+bool loggedIn;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  user = await UserProvider().fetchUser();
-
-  runApp(const MyApp());
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  loggedIn = prefs.getBool('loggedIn');
+  await runApp(MultiProvider(providers: [
+    ChangeNotifierProvider<UserProvider>(create: (context) => UserProvider())
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -27,10 +29,8 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.teal,
           ),
-          home: user.loggedIn != null
-              ? HomeScreen(
-                  user: user,
-                )
+          home: loggedIn != null
+              ? HomeScreen()
               : LoginScreen(
                   key: key,
                 ),
