@@ -5,7 +5,6 @@ import 'package:test_app/models/user.dart';
 class UserProvider with ChangeNotifier {
   static SharedPreferences _prefs;
   User user;
-  String email;
   Future<SharedPreferences> get database async {
     if (_prefs != null) {
       return _prefs;
@@ -18,7 +17,6 @@ class UserProvider with ChangeNotifier {
   void fetchUser() async {
     final db = await database;
     user = User(email: db.getString('email'), loggedIn: db.getBool('loggedIn'));
-    email = user.email;
     notifyListeners();
   }
 

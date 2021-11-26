@@ -25,7 +25,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
         child: ListView(
           children: [
             UserAccountsDrawerHeader(
-                accountName: Text(""), accountEmail: Text(data.email ?? "")),
+                accountName: Text(""),
+                accountEmail: Text(data.user.email ?? "")),
             ListTile(
               onTap: () {},
               leading: Icon(Icons.logout),
